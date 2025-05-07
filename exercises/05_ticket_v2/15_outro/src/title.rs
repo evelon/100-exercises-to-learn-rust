@@ -18,13 +18,18 @@ impl TryFrom<&str> for TicketTitle {
     type Error = TitleError;
 
     fn try_from(title: &str) -> Result<Self, Self::Error> {
-        if title.is_empty() {
-            return Err(TitleError::CannotBeEmpty);
-        }
-        if title.as_bytes().len() > 50 {
-            return Err(TitleError::TooLong);
-        }
+        validate_title(title)?;
         Ok(TicketTitle(title.into()))
+    }
+}
+
+fn validate_title(title: &str) -> Result<(), TitleError> {
+    if title.is_empty() {
+        Err(TitleError::CannotBeEmpty)
+    } else if title.as_bytes().len() > 50 {
+        Err(TitleError::TooLong)
+    } else {
+        Ok(())
     }
 }
 

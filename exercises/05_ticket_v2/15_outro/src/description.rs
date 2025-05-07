@@ -18,13 +18,18 @@ impl TryFrom<&str> for TicketDescription {
     type Error = DecriptionError;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-        if value.is_empty() {
-            Err(DecriptionError::CannotBeEmpty)
-        } else if value.as_bytes().len() > 500 {
-            Err(DecriptionError::TooLong)
-        } else {
-            Ok(TicketDescription(value.into()))
-        }
+        validate_description(value)?;
+        Ok(TicketDescription(value.into()))
+    }
+}
+
+fn validate_description(description: &str) -> Result<(), DecriptionError> {
+    if description.is_empty() {
+        Err(DecriptionError::CannotBeEmpty)
+    } else if description.as_bytes().len() > 500 {
+        Err(DecriptionError::TooLong)
+    } else {
+        Ok(())
     }
 }
 
